@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Intsinzi Exam Lab – National Exam Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#0f2a43;--mut:#5b6b7c;--line:#d9e2ec;--blue:#1456a8;--sun:#f2b705;--green:#1c8a4a;--red:#c43d3d;--soft:#e8f0fa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0c1824;--card:#13263a;--ink:#eaf1f8;--mut:#9fb2c5;--line:#27425c;--blue:#6fa8ff;--sun:#f2b705;--green:#4cc27f;--red:#ff7b7b;--soft:#1a3350}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0c1824;--card:#13263a;--ink:#eaf1f8;--mut:#9fb2c5;--line:#27425c;--blue:#6fa8ff;--green:#4cc27f;--red:#ff7b7b;--soft:#1a3350}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.15;margin:0 0 .5rem}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+nav{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 0 16px}
+.brand{font:700 1.35rem Fraunces,serif;display:flex;gap:8px;align-items:center}.brand i{width:14px;height:28px;background:linear-gradient(var(--blue) 33%,var(--sun) 33% 66%,var(--green) 66%);border-radius:3px}
+.tabs button{background:none;border:0;color:var(--mut);font:800 1rem Nunito;padding:8px 12px;cursor:pointer;border-bottom:3px solid transparent}.tabs button.on{color:var(--ink);border-color:var(--sun)}
+.hero{padding:28px 0 20px}.hero h1{font-size:clamp(2rem,6vw,3.3rem);max-width:15em}.hero p{max-width:40em;color:var(--mut);font-size:1.1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.grid{display:grid;gap:16px;grid-template-columns:1fr 1fr}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+label{display:block;font-weight:800;margin:10px 0 4px}input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+button.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 20px;font:800 1rem Nunito;cursor:pointer}button.btn.alt{background:var(--soft);color:var(--ink)}button.btn.go{background:var(--sun);color:#1a1a1a;font-size:1.1rem;width:100%;margin-top:14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.rules{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:0;list-style:none}.rules li{background:var(--soft);border-radius:20px;padding:4px 12px;font-weight:600;font-size:.9rem}
+.mat{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.92rem}.mat button{border:0;background:none;color:var(--red);cursor:pointer;font-weight:800}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin-bottom:14px}
+.timer{font:800 1.7rem Nunito;font-variant-numeric:tabular-nums}.timer.low{color:var(--red)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:13px 14px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:600 1rem Nunito;cursor:pointer}.opt.sel{border-color:var(--blue);background:var(--soft)}
+.opt.ok{border-color:var(--green)}.opt.bad{border-color:var(--red)}
+.nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}.nav button{padding:8px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-weight:800;cursor:pointer}.nav .done{background:var(--soft);border-color:var(--blue)}.nav .flag{border-color:var(--sun);box-shadow:inset 0 -4px var(--sun)}.nav .now{outline:3px solid var(--blue)}
+.score{font:700 4rem Fraunces,serif;line-height:1}.pill{display:inline-block;padding:3px 12px;border-radius:20px;background:var(--sun);color:#1a1a1a;font-weight:800}
+.tb{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.tb b{display:block;height:100%;background:var(--green)}.tb.w b{background:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}.sc{overflow-x:auto}
+.mut{color:var(--mut)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hide{display:none}
+@media(prefers-reduced-motion:no-preference){.spin{animation:s 1s linear infinite}}@keyframes s{to{transform:rotate(360deg)}}
+.spin{width:38px;height:38px;border:5px solid var(--line);border-top-color:var(--blue);border-radius:50%;margin:0 auto 14px}
+</style></head><body><div class="wrap">
+<nav><div class="brand"><i></i>Intsinzi Exam Lab</div><div class="tabs" id="tabs"><button data-t="home" class="on">Start exam</button><button data-t="rec">Candidate records</button></div></nav>
+<main id="app"></main>
+<p class="mut" style="margin-top:32px;font-size:.85rem">Intsinzi Exam Lab is an independent practice tool. It is not affiliated with or endorsed by REB or NESA; use official past papers alongside it.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const St={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const SUBJ=['English','Kinyarwanda','French','Mathematics','Science and Elementary Technology','Social Studies','Creative Arts'];
+const MIN=100,NQ=20,rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+let mats=St.get('mats',[]),imgs=[],exam=St.get('exam',null),timer=null,idx=0,tab='home',confirmSub=false;
+
+/* ---------- tabs ---------- */
+$('#tabs').onclick=e=>{const t=e.target.dataset.t;if(!t)return;tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t==t));route()};
+function route(){if(tab=='rec')return records();if(exam&&!exam.done){if(Date.now()>=exam.end)return finish(true);return sit()}if(exam&&exam.done&&exam.show)return result(exam);home()}
+
+/* ---------- home ---------- */
+function home(){
+ const c=St.get('cand',{});
+ app.innerHTML=`<section class="hero"><h1>Practise like it’s the real national exam.</h1>
+ <p>Intsinzi Exam Lab gives every learner a fresh, timed mock paper built from the curriculum books and materials you choose. Finish, see your marks, and get clear advice on what to revise next.</p>
+ <ul class="rules"><li>100 minutes for every subject</li><li>${NQ} new questions each attempt</li><li>Instant marks and revision advice</li><li>FRW 120 per exam, or FRW 1,899 for a 30-day pass</li><li>Records kept for follow-up</li></ul></section>
+ <div class="grid"><div class="card"><h2>Candidate</h2>
+ <label for="nm">Full name</label><input id="nm" value="${esc(c.name)}" autocomplete="off">
+ <label for="sc">School (optional)</label><input id="sc" value="${esc(c.school)}">
+ <div class="grid" style="gap:10px"><div><label for="lv">Level</label><select id="lv">${[1,2,3,4,5,6].map(n=>`<option ${(c.level||'P5')=='P'+n?'selected':''}>P${n}</option>`).join('')}<option disabled>Secondary (coming soon)</option></select></div>
+ <div><label for="sj">Subject</label><select id="sj">${SUBJ.map(s=>`<option ${c.subject==s?'selected':''}>${s}</option>`).join('')}</select></div></div>
+ ${passOk()?'<p><span class="pill">Pass active until '+new Date(pass.exp).toLocaleDateString()+'</span> <button class="btn alt" id="lo" style="padding:4px 12px">Log out</button></p>':''}<label for="plan">Access</label><select id="plan"><option value="single">Single exam · FRW 120</option><option value="month">Monthly pass · FRW 1,899 (30 days, unlimited)</option><option value="login">I already have a pass · log in</option></select>
+ <label><input type="checkbox" id="keep" checked style="width:auto"> Save my result to candidate records</label>
+ <button class="btn go" id="start">Continue</button><p class="mut" id="err" style="color:var(--red)"></p></div>
+ <div class="card"><h2>Learning materials</h2><p class="mut">Upload pupils’ books, teachers’ guides, notes or past papers. Questions are drawn from random parts of them each time. Any format is accepted: PDF, images, text and more.</p>
+ <input type="file" id="up" multiple accept="*/*"><div id="ml" style="margin-top:10px"></div>
+ <p class="mut" style="font-size:.85rem">Text and PDFs are remembered on this device. Images are used for this visit only. Without uploads, questions follow the standard curriculum for the level.</p></div></div>`;
+ $('#up').onchange=upload;ml();$('#start').onclick=begin;if($('#lo'))$('#lo').onclick=()=>{pass=null;St.set('pass',null);home()};
+}
+function ml(){const l=$('#ml');if(!l)return;const a=[...mats.map((m,i)=>({n:m.name,k:'m',i})),...imgs.map((m,i)=>({n:m.name+' (image)',k:'i',i}))];
+ l.innerHTML=a.length?a.map(x=>`<div class="mat"><span>${esc(x.n)}</span><button data-k="${x.k}" data-i="${x.i}">Remove</button></div>`).join(''):'<p class="mut">No materials yet.</p>';
+ l.onclick=e=>{const b=e.target.closest('button');if(!b)return;(b.dataset.k=='m'?mats:imgs).splice(+b.dataset.i,1);St.set('mats',mats);ml()}}
+async function pdfText(f){const p=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let t='';for(let i=1;i<=Math.min(p.numPages,120);i++){const pg=await p.getPage(i);t+=(await pg.getTextContent()).items.map(x=>x.str).join(' ')+'\n'}return t}
+async function upload(e){const err=[];for(const f of e.target.files){try{
+ if(f.type.startsWith('image/')){imgs.push({name:f.name,blob:f});continue}
+ let t=/pdf/i.test(f.type+f.name)?await pdfText(f):await f.text();t=t.replace(/\s+/g,' ').trim();
+ if(t.length<200||(t.match(/\uFFFD/g)||[]).length>t.length/20){err.push(f.name+': no readable text (for scanned pages, upload them as images)');continue}
+ mats.push({name:f.name,text:t.slice(0,150000)})}catch(x){err.push(f.name+': could not be read')}}
+ St.set('mats',mats);ml();if(err.length)$('#ml').insertAdjacentHTML('beforeend','<p style="color:var(--red)">'+err.map(esc).join('<br>')+'</p>');e.target.value=''}
+
+/* ---------- question generation ---------- */
+function mathQ(){const a=rnd(120,980),b=rnd(12,99),c=rnd(3,9),t=rnd(0,5);let q,r,p;
+ if(t==0){q=`${a} + ${b*7} = ?`;r=a+b*7;p='Addition and subtraction'}else if(t==1){q=`${a+b*9} − ${b} = ?`;r=a+b*8;p='Addition and subtraction'}
+ else if(t==2){q=`${b} × ${c} = ?`;r=b*c;p='Multiplication'}else if(t==3){q=`${b*c} ÷ ${c} = ?`;r=b;p='Division'}
+ else if(t==4){q=`A rectangle is ${b} cm long and ${c+2} cm wide. What is its perimeter in cm?`;r=2*(b+c+2);p='Perimeter and area'}
+ else{q=`A farmer has ${c*b} bananas and shares them equally among ${c} children. How many does each child get?`;r=b;p='Word problems'}
+ const o=new Set([r]);while(o.size<4)o.add(Math.max(1,r+rnd(-12,12)||5));return{q,o:[...o],a:r,t:p}}
+async function generate(subj,lv){
+ const seen=St.get('seen_'+subj,[]);let src='';
+ if(mats.length){const m=shuf(mats).slice(0,3);src=m.map(x=>{const s=rnd(0,Math.max(0,x.text.length-4000));return`[${x.name}] `+x.text.slice(s,s+4000)}).join('\n\n')}
+ let pr=`You are a Rwandan national primary examination setter. Write ${NQ} multiple-choice questions (4 options, exactly one correct) for a ${lv} ${subj} practice paper at the standard of the Rwanda Education Board primary leaving exam. Use the language of the subject (Kinyarwanda for Kinyarwanda, French for French, otherwise English), and simple, child-friendly wording. Cover a wide spread of topics.${src?' Base the questions mainly on the learning material below.':''} Variation seed: ${Math.random().toString(36).slice(2)}. Do not reuse these earlier questions: ${seen.slice(-20).map(s=>s.slice(0,45)).join(' | ')||'none'}.\nReturn ONLY a JSON array: [{"q":"question","o":["A","B","C","D"],"a":0,"t":"short topic name"}] where a is the index of the correct option.${src?'\n\nMATERIAL:\n'+src:''}`;
+ let raw=null;try{const sm=await claude.use('sample');if(sm){const o={cache:false,modelTier:'default'};if(imgs.length&&(await sm.limits()).images)o.images=imgs.slice(0,3).map(i=>i.blob);raw=await sm.json(pr,o)}}catch(e){}
+ let qs=(Array.isArray(raw)?raw:[]).filter(x=>x&&x.q&&Array.isArray(x.o)&&x.o.length>=3&&Number.isInteger(x.a)&&x.o[x.a]!=null).slice(0,NQ);
+ if(qs.length<8){if(subj!='Mathematics')throw new Error('The question writer is unavailable right now. Please try again in a moment.');qs=Array.from({length:NQ},mathQ).map(x=>({q:x.q,o:x.o.map(String),a:x.o.indexOf(x.a),t:x.t}))}
+ return qs.map(x=>{const o=shuf(x.o.map((t,i)=>({t:String(t),c:i==x.a})));return{q:String(x.q),o:o.map(z=>z.t),a:o.findIndex(z=>z.c),t:String(x.t||'General')}})}
+
+async function serverGen(c){ // paid mode: the backend writes the paper only after verifying payment
+ const m=mats.length?shuf(mats).slice(0,3).map(x=>{const s=rnd(0,Math.max(0,x.text.length-4000));return x.text.slice(s,s+4000)}).join('\n\n'):'';
+ const r=await fetch(API+'/api/exam',{method:'POST',headers:{'Content-Type':'application/json',...(c.payId?{}:{Authorization:'Bearer '+pass.token})},body:JSON.stringify({payment:c.payId,level:c.level,subject:c.subject,material:m,seen:St.get('seen_'+c.subject,[])})});
+ const j=await r.json();if(r.status==401&&!c.payId){pass=null;St.set('pass',null)}if(!r.ok)throw new Error(j.error||'Could not prepare the paper.');
+ return j.questions.map(x=>{const o=shuf(x.o.map((t,i)=>({t:String(t),c:i==x.a})));return{q:String(x.q),o:o.map(z=>z.t),a:o.findIndex(z=>z.c),t:String(x.t||'General')}})}
+async function begin(){
+ const name=$('#nm').value.trim();if(!name){$('#err').textContent='Please enter the candidate’s name.';return}
+ const c={name,school:$('#sc').value.trim(),level:$('#lv').value,subject:$('#sj').value,keep:$('#keep').checked};St.set('cand',c);const pl=$('#plan').value;if(pl=='login'){if(!await loginFlow())return}else if(pl=='month'&&!passOk()){if(!await buyPass(c))return}const rc=passOk()?'PASS '+pass.user:await pay(c);if(!rc)return;c.receipt=rc;
+ app.innerHTML='<div class="card" style="text-align:center;padding:50px"><div class="spin"></div><h2>Preparing a new paper for '+esc(name)+'…</h2><p class="mut">This can take up to a minute. The 100 minutes begin only when the paper appears.</p></div>';
+ try{const qs=await(API&&(c.payId||pass)?serverGen(c):generate(c.subject,c.level));
+  St.set('seen_'+c.subject,[...St.get('seen_'+c.subject,[]),...qs.map(q=>q.q)].slice(-80));
+  const now=Date.now();exam={id:now,c,qs,ans:qs.map(()=>-1),fl:qs.map(()=>false),start:now,end:now+MIN*60000,done:false};idx=0;St.set('exam',exam);sit()}
+ catch(e){home();$('#err').textContent=e.message||'Something went wrong. Please try again.'}}
+
+/* ---------- payment ---------- */
+const API='',PRICE=120; // set API to your backend URL (see server.js) to take real payments
+function pay(c){return new Promise(res=>{
+ app.innerHTML=`<div class="card" style="max-width:520px;margin:auto"><h2>Pay for your exam</h2><p class="mut">${esc(c.level)} ${esc(c.subject)} · 100 minutes · <b>FRW ${PRICE}</b></p>${API?'':'<p style="color:var(--red);font-weight:800">Demo mode: no real money is taken.</p>'}
+ <label for="ph">Mobile Money number</label><input id="ph" inputmode="tel" placeholder="07XXXXXXXX"><label for="nw">Network</label><select id="nw"><option>MTN</option><option>AIRTEL</option></select>
+ <button class="btn go" id="pp">Pay FRW ${PRICE}</button><p id="ps" class="mut" role="status"></p><button class="btn alt" id="pc">Cancel</button></div>`;
+ $('#pc').onclick=()=>{home();res(null)};
+ $('#pp').onclick=async()=>{const ph=$('#ph').value.replace(/\s/g,''),ps=$('#ps');if(!/^(07\d{8}|2507\d{8})$/.test(ph)){ps.textContent='Enter a valid number such as 0788123456.';return}
+  $('#pp').disabled=true;ps.textContent='Check your phone and approve the FRW '+PRICE+' request with your PIN…';
+  try{let ref;
+   if(!API){await new Promise(r=>setTimeout(r,3000));ref='DEMO-'+Date.now().toString(36).toUpperCase()}
+   else{const r=await fetch(API+'/api/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,network:$('#nw').value,candidate:c.name,subject:c.subject,level:c.level})}).then(x=>x.json());
+    if(!r.id)throw new Error(r.error||'Could not start payment.');c.payId=r.id;
+    for(let i=0;i<60&&!ref;i++){await new Promise(z=>setTimeout(z,3000));const s=await fetch(API+'/api/payments/'+r.id).then(x=>x.json());if(s.status=='SUCCESSFUL')ref=s.receipt;else if(s.status=='FAILED')throw new Error('Payment was declined or cancelled.')}
+    if(!ref)throw new Error('No confirmation yet. If money left your account, contact support with your phone number.')}
+   ps.textContent='Payment confirmed. Receipt '+ref;setTimeout(()=>res(ref),1200)}
+  catch(e){ps.textContent=e.message;$('#pp').disabled=false}}})}
+
+/* ---------- monthly pass ---------- */
+let pass=St.get('pass',null);const passOk=()=>pass&&pass.exp>Date.now(),sleep=ms=>new Promise(r=>setTimeout(r,ms)),RID='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',rid=n=>Array.from({length:n},()=>RID[rnd(0,31)]).join('');
+async function login(u,p){const r=await fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})}),j=await r.json();if(!r.ok)throw new Error(j.error||'Log in failed.');pass={token:j.token,exp:j.expires,user:u};St.set('pass',pass)}
+function credCard(u,p,exp,go){app.innerHTML=`<div class="card" style="max-width:520px;margin:auto"><h2>Your monthly pass is active</h2><p class="mut">Save these details now. They are shown once and work until ${new Date(exp).toLocaleDateString()}.</p><div class="card" style="background:var(--soft)"><p>Username: <b>${esc(u)}</b></p><p>Password: <b>${esc(p)}</b></p></div><div class="row"><button class="btn alt" id="cc">Copy</button><button class="btn" id="cg">Continue to exam</button></div></div>`;$('#cc').onclick=()=>{try{navigator.clipboard.writeText('Username: '+u+'  Password: '+p)}catch(e){}};$('#cg').onclick=go}
+function buyPass(c){return new Promise(res=>{
+ app.innerHTML=`<div class="card" style="max-width:520px;margin:auto"><h2>Monthly pass</h2><p class="mut"><b>FRW 1,899</b> for 30 days · practise as much as you like (up to 10 papers a day)</p>${API?'':'<p style="color:var(--red);font-weight:800">Demo mode: no real money is taken.</p>'}
+ <label for="ph">Mobile Money number</label><input id="ph" inputmode="tel" placeholder="07XXXXXXXX"><label for="nw">Network</label><select id="nw"><option>MTN</option><option>AIRTEL</option></select>
+ <label><input type="checkbox" id="ag" style="width:auto"> I agree to the pass terms: FRW 1,899 for 30 days, personal use only, login details must not be shared, no refund once the pass is active.</label>
+ <button class="btn go" id="pp">Pay FRW 1,899</button><p id="ps" class="mut" role="status"></p><button class="btn alt" id="pc">Cancel</button></div>`;
+ $('#pc').onclick=()=>{home();res(false)};
+ $('#pp').onclick=async()=>{const ph=$('#ph').value.replace(/ /g,''),ps=$('#ps');
+  if(!/^(07\d{8}|2507\d{8})$/.test(ph)){ps.textContent='Enter a valid number such as 0788123456.';return}
+  if(!$('#ag').checked){ps.textContent='Please accept the pass terms to continue.';return}
+  $('#pp').disabled=true;ps.textContent='Check your phone and approve the FRW 1,899 request with your PIN…';
+  try{let u,p,exp;
+   if(!API){await sleep(3000);u='DEMO-'+rid(5);p=rid(8);exp=Date.now()+30*864e5;St.set('demoCred',{username:u,password:p,exp});pass={user:u,exp};St.set('pass',pass)}
+   else{const r=await fetch(API+'/api/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,network:$('#nw').value,candidate:c.name,plan:'MONTHLY',accepted:true})}).then(x=>x.json());
+    if(!r.id)throw new Error(r.error||'Could not start payment.');
+    let cr;for(let i=0;i<60&&!cr;i++){await sleep(3000);const s=await fetch(API+'/api/payments/'+r.id).then(x=>x.json());if(s.status=='SUCCESSFUL'&&s.credentials)cr=s.credentials;else if(s.status=='FAILED')throw new Error('Payment was declined or cancelled.')}
+    if(!cr)throw new Error('No confirmation yet. If money left your account, contact support with your phone number.');
+    u=cr.username;p=cr.password;exp=cr.expires;await login(u,p)}
+   credCard(u,p,exp,()=>res(true))}
+  catch(e){ps.textContent=e.message;$('#pp').disabled=false}}})}
+function loginFlow(){return new Promise(res=>{
+ app.innerHTML=`<div class="card" style="max-width:520px;margin:auto"><h2>Log in with your pass</h2><label for="lu">Username</label><input id="lu" autocomplete="username"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"><button class="btn go" id="lg">Log in</button><p id="ls" style="color:var(--red)" role="status"></p><button class="btn alt" id="lc">Cancel</button></div>`;
+ $('#lc').onclick=()=>{home();res(false)};
+ $('#lg').onclick=async()=>{try{const u=$('#lu').value.trim().toUpperCase(),p=$('#lp').value.trim().toUpperCase();
+  if(!API){const d=St.get('demoCred');if(!d||d.username!=u||d.password!=p||d.exp<Date.now())throw new Error('Those details are not valid or have expired.');pass={user:u,exp:d.exp};St.set('pass',pass)}else await login(u,p);res(true)}catch(e){$('#ls').textContent=e.message}}})}
+
+/* ---------- exam ---------- */
+function sit(){
+ clearInterval(timer);const q=exam.qs[idx];
+ app.innerHTML=`<div class="bar"><div><b>${esc(exam.c.name)}</b><div class="mut" style="font-size:.88rem">${esc(exam.c.level)} · ${esc(exam.c.subject)}</div></div><div class="timer" id="tm" role="timer"></div></div>
+ <div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><p class="mut">Question ${idx+1} of ${exam.qs.length}</p><h3 style="font-family:Nunito;font-size:1.25rem">${esc(q.q)}</h3>
+ ${q.o.map((o,i)=>`<button class="opt ${exam.ans[idx]==i?'sel':''}" data-i="${i}">${'ABCD'[i]}. ${esc(o)}</button>`).join('')}
+ <div class="row" style="margin-top:14px"><button class="btn alt" id="pv" ${idx?'':'disabled'}>Back</button><button class="btn alt" id="fg">${exam.fl[idx]?'Unflag':'Flag for review'}</button><button class="btn" id="nx" ${idx<exam.qs.length-1?'':'disabled'}>Next</button></div></div>
+ <div class="card"><h3>Questions</h3><div class="nav">${exam.qs.map((_,i)=>`<button data-n="${i}" class="${exam.ans[i]>=0?'done':''} ${exam.fl[i]?'flag':''} ${i==idx?'now':''}">${i+1}</button>`).join('')}</div>
+ <button class="btn go" id="sub" style="background:var(--green);color:#fff">${confirmSub?'Confirm: '+exam.ans.filter(a=>a<0).length+' unanswered. Submit now':'Submit answers'}</button></div></div>`;
+ app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{exam.ans[idx]=+b.dataset.i;St.set('exam',exam);sit()});
+ $('#pv').onclick=()=>{idx--;sit()};$('#nx').onclick=()=>{idx++;sit()};$('#fg').onclick=()=>{exam.fl[idx]=!exam.fl[idx];St.set('exam',exam);sit()};
+ app.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{idx=+b.dataset.n;sit()});
+ $('#sub').onclick=()=>{if(!confirmSub){confirmSub=true;sit()}else{confirmSub=false;finish(false)}};
+ const t=()=>{const r=exam.end-Date.now();if(r<=0){clearInterval(timer);return finish(true)}const e=$('#tm');if(!e)return;e.textContent=String(Math.floor(r/60000)).padStart(2,'0')+':'+String(Math.floor(r%60000/1000)).padStart(2,'0');e.classList.toggle('low',r<600000)};t();timer=setInterval(t,1000)}
+
+/* ---------- results ---------- */
+function analyse(ex){const tp={};let sc=0;ex.qs.forEach((q,i)=>{const o=tp[q.t]||(tp[q.t]={c:0,n:0});o.n++;if(ex.ans[i]==q.a){o.c++;sc++}});return{sc,tp}}
+function finish(timeUp){clearInterval(timer);if(exam.done)return result(exam);
+ const{sc,tp}=analyse(exam);exam.done=true;exam.show=true;exam.timeUp=timeUp;exam.sc=sc;exam.used=Math.min(MIN,Math.round((Math.min(Date.now(),exam.end)-exam.start)/60000));
+ if(exam.c.keep){const r=St.get('records',[]);r.unshift({id:exam.id,name:exam.c.name,school:exam.c.school,level:exam.c.level,subject:exam.c.subject,sc,n:exam.qs.length,date:new Date().toISOString().slice(0,16).replace('T',' '),used:exam.used,receipt:exam.c.receipt,weak:Object.entries(tp).filter(([k,v])=>v.c/v.n<.6).map(([k])=>k)});St.set('records',r)}
+ St.set('exam',exam);result(exam)}
+const band=p=>p>=80?'Excellent':p>=60?'Good':p>=50?'Fair':'Needs support';
+function advice(ex){const{tp}=analyse(ex),w=Object.entries(tp).filter(([k,v])=>v.c/v.n<.6).sort((a,b)=>a[1].c/a[1].n-b[1].c/b[1].n),un=ex.ans.filter(a=>a<0).length,out=[];
+ w.slice(0,4).forEach(([k,v])=>out.push(`<b>${esc(k)}</b>: ${v.c} of ${v.n} correct. Re-read this unit in the pupils’ book, then redo its practice activities.`));
+ if(!w.length)out.push('Strong across all topics. Keep going with a new paper in a different subject, and try harder past-paper questions.');
+ if(un>2)out.push(`${un} questions were left unanswered. Practise pacing: answer every question, then return to flagged ones.`);
+ if(ex.timeUp)out.push('Time ran out before you submitted. Next time, check the timer every 20 questions’ worth of work.');
+ return out}
+function result(ex){
+ const n=ex.qs.length,p=Math.round(ex.sc/n*100),{tp}=analyse(ex);
+ app.innerHTML=`<div class="card"><p class="mut">${esc(ex.c.name)} · ${esc(ex.c.level)} ${esc(ex.c.subject)} · ${ex.used} of ${MIN} minutes used</p>
+ ${ex.timeUp?'<p style="color:var(--red);font-weight:800">The 100 minutes ended. Access closed and your answers were submitted automatically.</p>':''}
+ <div class="row"><div class="score">${ex.sc}<span class="mut" style="font-size:1.6rem">/${n}</span></div><div><span class="pill">${p}% · ${band(p)}</span></div></div></div>
+ <div class="grid"><div class="card"><h2>Performance by topic</h2>${Object.entries(tp).map(([k,v])=>{const r=v.c/v.n*100;return`<div style="margin:10px 0"><div class="row" style="justify-content:space-between"><span>${esc(k)}</span><b>${v.c}/${v.n}</b></div><div class="tb ${r<60?'w':''}"><b style="width:${r}%"></b></div></div>`}).join('')}</div>
+ <div class="card"><h2>Where to improve</h2><ul>${advice(ex).map(x=>`<li style="margin:8px 0">${x}</li>`).join('')}</ul><div id="ai"></div></div></div>
+ <div class="card"><h2>Answer review</h2>${ex.qs.map((q,i)=>`<div style="margin:16px 0"><b>${i+1}. ${esc(q.q)}</b>${q.o.map((o,j)=>`<div class="opt ${j==q.a?'ok':ex.ans[i]==j?'bad':''}" style="margin:4px 0;padding:8px 12px">${'ABCD'[j]}. ${esc(o)}${j==q.a?' ✓':ex.ans[i]==j?' (your answer)':''}</div>`).join('')}</div>`).join('')}</div>
+ <button class="btn go" id="again">Start a new exam</button>`;
+ $('#again').onclick=()=>{exam=null;St.set('exam',null);home()};scroll(0,0)}
+
+/* ---------- records ---------- */
+function records(){
+ const r=St.get('records',[]);
+ app.innerHTML=`<div class="card"><h2>Candidate records</h2><p class="mut">Stored on this device. Use the export for sharing or long-term filing.</p>
+ <div class="row"><input id="q" placeholder="Search by name, school or subject" style="max-width:340px"><button class="btn alt" id="ex">Export CSV</button><button class="btn alt" id="cl">Clear all</button></div>
+ <div class="sc"><table><thead><tr><th>Date</th><th>Candidate</th><th>School</th><th>Level</th><th>Subject</th><th>Score</th><th>Weak topics</th><th></th></tr></thead><tbody id="rb"></tbody></table></div><div id="csv"></div></div>`;
+ const draw=()=>{const k=$('#q').value.toLowerCase(),f=r.filter(x=>(x.name+x.school+x.subject).toLowerCase().includes(k));
+  $('#rb').innerHTML=f.length?f.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.school)}</td><td>${esc(x.level)}</td><td>${esc(x.subject)}</td><td><b>${x.sc}/${x.n}</b> (${Math.round(x.sc/x.n*100)}%)</td><td>${esc(x.weak.join(', '))}</td><td><button data-d="${x.id}" style="border:0;background:none;color:var(--red);cursor:pointer">Delete</button></td></tr>`).join(''):'<tr><td colspan="8" class="mut">No records yet. Finish an exam with “Save my result” ticked.</td></tr>'};
+ draw();$('#q').oninput=draw;
+ $('#rb').onclick=e=>{const d=e.target.dataset.d;if(!d)return;const i=r.findIndex(x=>x.id==d);r.splice(i,1);St.set('records',r);draw()};
+ $('#cl').onclick=()=>{if($('#cl').dataset.c){r.length=0;St.set('records',r);draw();$('#cl').textContent='Clear all';delete $('#cl').dataset.c}else{$('#cl').dataset.c=1;$('#cl').textContent='Confirm clear all'}};
+ $('#ex').onclick=async()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"',csv=['Date,Candidate,School,Level,Subject,Score,Out of,Percent,Minutes used,Weak topics',...r.map(x=>[x.date,x.name,x.school,x.level,x.subject,x.sc,x.n,Math.round(x.sc/x.n*100),x.used,x.weak.join('; ')].map(q).join(','))].join('\n');
+  try{const d=await claude.use('downloads');if(d){await d.save({filename:'intsinzi-records.csv',data:csv});return}}catch(e){}
+  $('#csv').innerHTML='<label>Copy this CSV</label><textarea rows="6">'+esc(csv)+'</textarea>'}}
+
+route();
+</script></body></html>
